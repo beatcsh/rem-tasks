@@ -1,0 +1,35 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+/remtasks/node_modules
+/remtasks/.env
+
+/rem_app/android
+
+# dependencies
+/rem_app/node_modules
+/rem_app/.pnp
+/rem_app/.pnp.js
+
+# testing
+/rem_app/coverage
+
+# production
+/rem_app/dist
+
+# misc
+/rem_app/.DS_Store
+/rem_app/.env.local
+/rem_app/.env.development.local
+/rem_app/.env.test.local
+/rem_app/.env.production.local
+/rem_app/.nx
+/rem_app/.nx/cache
+/rem_app/.vscode/*
+/rem_app/!/.vscode/extensions.json
+/rem_app/.idea
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional eslint cache
+/rem_app/.eslintcache
