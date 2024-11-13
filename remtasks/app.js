@@ -1,27 +1,46 @@
 import express from "express"
 import cors from "cors"
-import { conn } from "./connection/connection.js"
-import userRoutes from "./routes/usersRoutes.js"
+import mongoose from "mongoose"
+import dotenv from "dotenv"
+import usersController from "./controllers/usersController.js"
+import notesController from "./controllers/notesController.js"
+import categoriesController from "./controllers/categoriesController.js"
+
+dotenv.config()
 
 const app = express()
-const port = 5500
-const db = conn
+
+mongoose.connect(process.env.URL)
+    .then(() => {
+        console.log("Conectado a la base de datos")
+    })
+    .catch((err) => {
+        console.log("Error de conexión:", err)
+    })
 
 app.use(cors())
 app.use(express.json())
 
-app.use("/users",userRoutes)
+// users routes
+app.get('/users/all', usersController.getUsers)
+app.get('/users/login', usersController.login)
+app.post('/users/add', usersController.createUser)
+app.put('/users/upd', usersController.editUser)
+app.delete('/users/del', usersController.removeUser)
 
-app.get('/', (req, res) => {
-    db.query("select * from users", (err, results) => {
-        if (err) {
-            console.error(err)
-            return res.status(500).send("no se puede consultar ahora")
-        }
-        res.send(results)
-    })
-})
+// notes routes
+app.get('/notes/all', notesController.getNotes)
+app.get('/notes/one', notesController.getOneNote)
+app.post('/notes/add', notesController.createNote)
+app.put('/notes/upd', notesController.editNote)
+app.delete('/notes/del', notesController.removeNote)
 
-app.listen(port, () => {
-    console.log('servidor arranca')
+// categories routes
+app.get('/categs/all', categoriesController.getCategories)
+app.get('/categs/one', categoriesController.getCategory)
+app.post('/categs/add', categoriesController.createCategory)
+app.delete('/categs/del', categoriesController.removeCategory)
+
+app.listen(5000, () => {
+    console.log('Servidor en el puerto 5000')
 })
