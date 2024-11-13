@@ -38,7 +38,7 @@ app.delete('/notes/del', notesController.removeNote)
 // categories routes
 app.get('/categs/all', categoriesController.getCategories)
 app.get('/categs/one', categoriesController.getCategory)
-app.post('/categs/add', categoriesController.createCategory)
+app.post('/categs/add', categoriesController.createCategory) // paso
 app.delete('/categs/del', categoriesController.removeCategory)
 
 app.listen(5000, () => {

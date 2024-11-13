@@ -8,7 +8,7 @@ export default {
             const categories = await categoriesModel.find({ id_user: req.query._id })
             if (!categories) return res.status(400).json({ "msg": "no hay categorias del usuario" })
 
-            res.status(200).json({ "msg": "todo bien aqui andan" })
+            res.status(200).json({ categories })
 
         } catch (err) {
             console.log(err)
@@ -21,7 +21,7 @@ export default {
             const category = await categoriesModel.findOne({ name: req.body.name })
             if (!category) return res.status(400).json({ "msg": "no hay categoria" })
 
-            res.status(200).json({ "msg": "todo bien aqui andan" })
+            res.status(200).json(category)
 
         } catch (err) {
             console.log(err)
