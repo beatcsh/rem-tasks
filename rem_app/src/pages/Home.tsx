@@ -16,7 +16,7 @@ const Home: React.FC = () => {
     User: <User/>
   }
 
-  const [currentView, setCurrentView] = useState<'Dates' | 'Notes' | 'User'>('Dates')
+  const [currentView, setCurrentView] = useState<'Dates' | 'Notes' | 'User'>('Notes')
 
   // peticion de notas
   useEffect(() => {
@@ -67,7 +67,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Main */}
-      <div className="flex flex-col items-center justify-start space-y-4 bg-white w-full overflow-auto py-[100px]">
+      <div className="flex flex-col items-center justify-start space-y-4 bg-white w-full overflow-auto py-[90px]">
         {views[currentView]}
       </div>
 
