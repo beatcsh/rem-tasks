@@ -1,13 +1,25 @@
 import { notesModel } from "../models/notesModel.js"
 
 export default {
+    getAllNotes: async (req, res) => {
+        try {
+            const notes = await notesModel.find()
+
+            if (!notes) return res.status(400).json({ "msg": "ni tienes notas" })
+
+            res.status(200).send(notes)
+        } catch (err) {
+            console.log(err)
+            res.status(500).json({ "msg": "hay algo mal" })
+        }
+    },
     getNotes: async (req, res) => {
         try {
             const notes = await notesModel.find({ id_user: req.query._id })
 
             if (!notes) return res.status(400).json({ "msg": "ni tienes notas" })
 
-            res.status(200).json(notes)
+            res.status(200).send(notes)
         } catch (err) {
             console.log(err)
             res.status(500).json({ "msg": "hay algo mal" })

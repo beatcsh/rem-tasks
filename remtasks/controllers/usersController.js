@@ -41,17 +41,17 @@ export default {
     login: async (req, res) => {
         try {
 
-            const { username, pass } = req.body
+            const { email, pass } = req.body
 
-            if (!username, !pass) return res.status(400).json({ "msg": "credenciales no validas" })
+            if (!email, !pass) return res.status(400).json({ "msg": "credenciales no validas" })
             
-            const user = await usersModel.findOne({ username })
+            const user = await usersModel.findOne({ email })
 
             if (!user) return res.status(400).json({ "msg": "ni existes" })
 
             if (!bcrypt.compare(pass, user.pass)) return res.status(400).json({ "status": "no existes" })
             
-            const load = { id: user._id, username: user.username }
+            const load = { id: user._id, email: user.email }
             const token = await jwt.sign(load, process.env.private_key)
             return res.status(200).json({ token })
             

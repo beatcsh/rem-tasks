@@ -23,13 +23,14 @@ app.use(express.json())
 
 // users routes
 app.get('/users/all', usersController.getUsers)
-app.get('/users/login', usersController.login)
+app.post('/users/login', usersController.login)
 app.post('/users/add', usersController.createUser)
 app.put('/users/upd', usersController.editUser)
 app.delete('/users/del', usersController.removeUser)
 
 // notes routes
 app.get('/notes/all', notesController.getNotes)
+app.get('/notes/alln', notesController.getAllNotes)
 app.get('/notes/one', notesController.getOneNote)
 app.post('/notes/add', notesController.createNote)
 app.put('/notes/upd', notesController.editNote)

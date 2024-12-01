@@ -24,4 +24,22 @@ const notesSchema = new Schema([
     }
 ])
 
+/*
+
+{
+  "title": "Express MVC",
+  "content": "I'll learn that shit",
+  "status": "In Progress",
+  "date_pro": "2024-04-25T12:00:00Z",
+  "deadline": "2024-04-30T12:00:00Z",
+  
+}
+
+usuario id
+6733f16935e1efce8437c8f2
+
+  categoria id
+  674a4800da1657c858098411
+
+*/
 export const notesModel = new model('notes', notesSchema)
