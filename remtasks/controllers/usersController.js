@@ -15,6 +15,16 @@ export default {
             res.status(500).json({ "msg": "hay algo mal" })
         }
     },
+    getUser: async (req, res) => {
+        try {
+            const id_user = req.query._id
+            const user = await usersModel.findOne({_id: id_user})
+            res.status(200).json(user)
+        } catch (err) {
+            console.log(err)
+            res.status(500).json({ "msg": "hay algo mal" })
+        }
+    },
     createUser: async (req, res) => {
         try {
 
@@ -63,7 +73,6 @@ export default {
     editUser: async (req, res) => {
         try {
             const user = await usersModel.findById(req.query._id)
-
             if (!user) return res.status(400).json({ "status": "usuario no encontrado" })
 
             user.username = req.body.username ? req.body.username : user.username;

@@ -42,7 +42,7 @@ export default {
 
             const { title, content, status, deadline, id_category } = req.body
 
-            if (!title || !content || !status || !deadline || !id_category) return res.status(200).json({ "msg": "algo falto we" })
+            if (!title || !content || !status || !deadline || !id_category) return res.status(400).json({ "msg": "algo falto we" })
 
             const note = {
                 title: title,
@@ -51,10 +51,12 @@ export default {
                 date_pro: new Date(),
                 deadline: deadline,
                 id_category: id_category,
-                id_user: req.query._id
+                id_user: req.body.id_user
             }
 
             await notesModel.create(note)
+
+            res.status(200).json({ msg: "se creo la nota bien" })
 
         } catch (err) {
             console.log(err)

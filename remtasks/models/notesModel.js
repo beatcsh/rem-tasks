@@ -8,7 +8,7 @@ const notesSchema = new Schema([
         content: { type: String, required: true }
     },
     {
-        status: { type: String, required: true }
+        status: { type: String, enum: ['pending','done','in-progress'], default: 'pending' }
     },
     {
         date_pro: { type: Date, required: true }

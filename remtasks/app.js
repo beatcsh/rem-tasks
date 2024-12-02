@@ -27,6 +27,7 @@ app.post('/users/login', usersController.login)
 app.post('/users/add', usersController.createUser)
 app.put('/users/upd', usersController.editUser)
 app.delete('/users/del', usersController.removeUser)
+app.get('/users/getUser', usersController.getUser)
 
 // notes routes
 app.get('/notes/all', notesController.getNotes)

@@ -1,42 +1,43 @@
-import { useState } from "react";
-import Swal from "sweetalert2";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 interface Data {
-    data: any[]
+    data: any[],
+    setCurrentView: React.Dispatch<React.SetStateAction<'Dates' | 'Notes' | 'User' | 'CreateNote' | 'EditNote'>>,
+    setSelectedNote: React.Dispatch<React.SetStateAction<any>>
 }
 
-export const Notes: React.FC<Data> = ({ data }) => {
-    const [note, setNote] = useState<any>({})
-    const [isModalVisible, setIsModalVisible] = useState<Boolean>(false)
+export const Notes: React.FC<Data> = ({ data, setCurrentView, setSelectedNote }) => {
 
-    const openModal = () => {
-        setIsModalVisible(true)
-    }
+    const deleteNote = async (_id: string) => {
+        console.log({ _id });
 
-    const closeModal = () => {
-        setIsModalVisible(false)
-    }
+        // Mostrar el mensaje de confirmación
+        const result = await Swal.fire({
+            title: "¿Estás seguro de eliminar la nota?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar",
+        });
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const data_temp: any = data;
-        data_temp[e.target.name] = e.target.value;
-        setNote(data_temp)
-    }
+        if (result.isConfirmed) {
+            try {
+                // Enviar la solicitud DELETE con el _id como query parameter
+                const response = await axios.delete(`http://localhost:5000/notes/del?_id=${_id}`);
 
-    const onSubmit = async () => {
-
-        try {
-            console.log(data)
-            Swal.fire("Enviando Datos");
-            Swal.showLoading();
-            await axios.post("http://localhost:5000/users/add", data)
-            Swal.fire("Si funciona el register", "funciono", "success")
-        } catch (err: any) {
-            Swal.fire("Error al iniciar sesion", err.response.data.msg, "error")
+                Swal.fire("Nota eliminada", response.data.msg, "success");
+            } catch (err: any) {
+                console.error(err);
+                Swal.fire("Error", "No se pudo eliminar la nota", "error");
+            }
+        } else {
+            console.log("Cancelado");
         }
-    }
+    };
+
 
     const cards = data.map((note) => (
         <div
@@ -64,6 +65,13 @@ export const Notes: React.FC<Data> = ({ data }) => {
                         return <div className="w-[30%] text-xs p-1 text-center rounded-xl text-white font-semibold bg-gray-500">No Status</div>;
                 }
             })()}
+            <p className="w-[60%] space-x-6">
+                <button onClick={() => {
+                    setCurrentView('EditNote');
+                    setSelectedNote(note)
+                }}><i className='bx bxs-edit text-xl text-morado hover:text-moradobajo' ></i></button>
+                <button onClick={() => deleteNote(note._id)}><i className='bx bx-trash-alt text-xl text-morado hover:text-moradobajo' ></i></button>
+            </p>
         </div>
     ));
 
@@ -71,62 +79,7 @@ export const Notes: React.FC<Data> = ({ data }) => {
         <>
             <div className="w-full grid place-items-center px-10">
                 {cards}
-                <button onClick={() => openModal()} className="absolute bottom-5 right-5 z-10 mb-[100px] bg-morado rounded-full p-2 w-[50px] h-[50px] hover:bg-moradobajo transition-all duration-150"><i className='bx bx-plus text-3xl font-bold text-white' ></i></button>
             </div>
-            {isModalVisible && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-10 z-50 min-h-screen">
-                    <div className="h-[80vh] bg-white flex flex-col justify-center place-items-center w-full space-y-6 rounded-xl relative">
-                        {/* Botón de cierre */}
-                        <button
-                            className="absolute top-4 right-4 font-bold text-3xl text-black"
-                            onClick={closeModal}
-                        >
-                            &times;
-                        </button>
-
-                        {/* Contenido del formulario */}
-                        <h1 className="text-xl font-bold text-morado">Crear Nota</h1>
-                        <p>Ingresa la información de tu nota:</p>
-                        <label className="w-[60%] h-[40px] input input-bordered flex bg-gray-200 items-center gap-3">
-                            <i className='bx bxs-edit text-morado'></i>
-                            <input
-                                onChange={(e) => onChange}
-                                name="title"
-                                type="text"
-                                className="grow text-gray-700"
-                                placeholder="Título"
-                            />
-                        </label>
-                        <label className="w-[60%] h-[40px] input input-bordered flex bg-gray-200 items-center gap-3">
-                            <i className='bx bxs-file text-morado'></i>
-                            <input
-                                type="text"
-                                onChange={(e) => onChange}
-                                name="content"
-                                className="grow text-gray-700 resize-none"
-                                placeholder="Contenido"
-                            />
-                        </label>
-                        <label className="w-[90%] h-[40px] input input-bordered flex bg-gray-200 items-center gap-3">
-                            <i className='bx bxs-calendar text-morado'></i>
-                            <input
-                                onChange={(e) => onChange}
-                                name="deadline"
-                                type="datetime-local"
-                                className="grow text-gray-700"
-                                placeholder="Fecha límite"
-                            />
-                        </label>
-                        <button
-                            onClick={onSubmit}
-                            className="btn border-0 bg-morado text-white font-bold w-[50%] mt-8 hover:bg-moradobajo"
-                        >
-                            Crear Nota
-                        </button>
-                    </div>
-                </div>
-            )}
-
         </>
     )
 };

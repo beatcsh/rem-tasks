@@ -8,7 +8,7 @@ import { Register } from './pages/Register';
 import '@ionic/react/css/core.css';
 
 const App: React.FC = () => (
-  <IonApp>
+  <IonApp className='bg-white'>
     <Router>
       <Switch>
         {/* Usamos `component` para renderizar los componentes en la version de react-router-dom 5.3.4 */}

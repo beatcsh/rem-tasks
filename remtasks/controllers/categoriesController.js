@@ -8,7 +8,7 @@ export default {
             const categories = await categoriesModel.find({ id_user: req.query._id })
             if (!categories) return res.status(400).json({ "msg": "no hay categorias del usuario" })
 
-            res.status(200).json({ categories })
+            res.status(200).send(categories)
 
         } catch (err) {
             console.log(err)
