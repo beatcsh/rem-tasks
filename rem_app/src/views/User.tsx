@@ -1,6 +1,19 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { useLocation } from "react-router";
+import { jwtDecode } from "jwt-decode";
+import { useHistory } from "react-router";
+
+interface LocationStorage {
+    token?: string;
+}
+
+interface decodedToken {
+    _id: string;
+    exp: number;
+    iat: number;
+}
 
 interface IUser {
     email: string,
@@ -15,20 +28,27 @@ interface IAvatar {
 }
 
 export const User = () => {
-    const [user,setUser] = useState<any>({})
+    const history = useHistory();
+
+    const [user, setUser] = useState<any>({})
+
+    const location = useLocation<LocationStorage>();
+    const token = location.state?.token || localStorage.getItem("authToken") || "nose";
+    console.log(token)
 
     useEffect(() => {
         const fetchData = async () => {
-          const id_user = "6733f16935e1efce8437c8f2";
-          try {
-            const response = await axios.get(`http://localhost:5000/users/getUser?_id=${id_user}`);
-            setUser(response.data);
-          } catch (err: any) {
-            Swal.fire("Error", "No pude traer tu informacion", "error");
-          }
+            const decodedToken: decodedToken = jwtDecode(token);
+            const id_user = decodedToken._id;
+            try {
+                const response = await axios.get(`http://localhost:5000/users/getUser?_id=${id_user}`);
+                setUser(response.data);
+            } catch (err: any) {
+                Swal.fire("Error", "No pude traer tu informacion", "error");
+            }
         };
         fetchData();
-      }, []);
+    }, []);
 
     const [data, setData] = useState<IUser>({
         email: "",
@@ -63,13 +83,15 @@ export const User = () => {
     }
 
     const onSubmit = async () => {
-        const id_user = "6733f16935e1efce8437c8f2";
+
+        const decodedToken: decodedToken = jwtDecode(token);
+        const id_user = decodedToken._id;
 
         if (data.pass !== confirmPass) {
             Swal.fire("Error", "Las contraseñas no coinciden", "error");
             return;
         }
-    
+
         // Mostrar el mensaje de confirmación
         const result = await Swal.fire({
             title: "¿Estás seguro de editar tu información?",
@@ -80,13 +102,15 @@ export const User = () => {
             confirmButtonText: "Sí",
             cancelButtonText: "No",
         });
-    
+
         if (result.isConfirmed) {
             try {
-                
-                const response = await axios.put(`http://localhost:5000/users/upd?_id=${id_user}`,data);
-    
+
+                const response = await axios.put(`http://localhost:5000/users/upd?_id=${id_user}`, data);
+
                 Swal.fire("Informacion guardada", response.data.msg, "success");
+
+                history.push('/home')
             } catch (err: any) {
                 console.error(err);
                 Swal.fire("Error", "No se pudo guardar la informacion", "error");
@@ -104,11 +128,11 @@ export const User = () => {
                 <p>Algo nuevo?</p>
                 <label className="input input-bordered flex bg-gray-200 items-center gap-3">
                     <i className='bx bxs-envelope text-morado'></i>
-                    <input onChange={onChange} name="email" type="text" className="grow text-gray-700" placeholder={user.email}/>
+                    <input onChange={onChange} name="email" type="text" className="grow text-gray-700" placeholder={user.email} />
                 </label>
                 <label className="input input-bordered flex bg-gray-200 items-center gap-3">
                     <i className='bx bxs-user text-morado'></i>
-                    <input onChange={onChange} name="username" type="text" className="grow text-gray-700" placeholder={user.username}/>
+                    <input onChange={onChange} name="username" type="text" className="grow text-gray-700" placeholder={user.username} />
                 </label>
                 <p>Quieres cambiar tu contraseña?</p>
                 <label className="input input-bordered flex bg-gray-200 items-center gap-3">
@@ -137,6 +161,7 @@ export const User = () => {
                 >
                     Guardar cambios
                 </button>
+                <a className="btn border-0  bg-red-800 text-white font-bold w-[50%] mt-8 hover:bg-red-500" href="/">Cerrar Sesion</a>
             </div>
         </>
     )

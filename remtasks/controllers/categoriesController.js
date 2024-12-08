@@ -8,11 +8,11 @@ export default {
             const categories = await categoriesModel.find({ id_user: req.query._id })
             if (!categories) return res.status(400).json({ "msg": "no hay categorias del usuario" })
 
-            res.status(200).send(categories)
+            return res.status(200).send(categories)
 
         } catch (err) {
             console.log(err)
-            res.status(500).json({ "msg": "hay pedos aqui" })
+            return res.status(500).json({ "msg": "hay pedos aqui" })
         }
     },
     getCategory: async (req, res) => {
@@ -21,11 +21,11 @@ export default {
             const category = await categoriesModel.findOne({ name: req.body.name })
             if (!category) return res.status(400).json({ "msg": "no hay categoria" })
 
-            res.status(200).json(category)
+            return res.status(200).json(category)
 
         } catch (err) {
             console.log(err)
-            res.status(500).json({ "msg": "hay pedos aqui" })
+            return res.status(500).json({ "msg": "hay pedos aqui" })
         }
     },
     createCategory: async (req, res) => {
@@ -45,11 +45,11 @@ export default {
 
             await categoriesModel.create(category)
 
-            res.status(200).json({ "msg": "se creo bien" })
+            return res.status(200).json({ "msg": "se creo bien" })
 
         } catch (err) {
             console.log(err)
-            res.status(500).json({ "msg": "hay pedos aqui" })
+            return res.status(500).json({ "msg": "hay pedos aqui" })
         }
     },
     removeCategory: async (req, res) => {
@@ -58,11 +58,11 @@ export default {
 
             if(!category) return res.status(400).json({ "msg": "no hay categoria capaz ya la borraste, revisa" })
 
-            res.status(200).json({ "msg": "se quito" })
+            return res.status(200).json({ "msg": "se quito" })
 
         } catch (err) {
             console.log(err)
-            res.status(500).json({ "msg": "hay pedos aqui" })
+            return res.status(500).json({ "msg": "hay pedos aqui" })
         }
     }
 }

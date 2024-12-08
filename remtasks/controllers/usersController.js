@@ -9,20 +9,20 @@ export default {
     getUsers: async (req, res) => {
         try {
             const users = await usersModel.find()
-            res.status(200).json(users)
+            return res.status(200).json(users)
         } catch (err) {
             console.log(err)
-            res.status(500).json({ "msg": "hay algo mal" })
+            return res.status(500).json({ "msg": "hay algo mal" })
         }
     },
     getUser: async (req, res) => {
         try {
             const id_user = req.query._id
             const user = await usersModel.findOne({_id: id_user})
-            res.status(200).json(user)
+            return res.status(200).json(user)
         } catch (err) {
             console.log(err)
-            res.status(500).json({ "msg": "hay algo mal" })
+            return res.status(500).json({ "msg": "hay algo mal" })
         }
     },
     createUser: async (req, res) => {
@@ -42,10 +42,10 @@ export default {
             }
 
             await usersModel.create(user)
-            res.status(200).json({ "msg": "todo bien al crear" })
+            return res.status(200).json({ "msg": "todo bien al crear" })
         } catch (err) {
             console.log(err)
-            res.status(500).json({ "msg": "hay algo mal" })
+            return res.status(500).json({ "msg": "hay algo mal" })
         }
     },
     login: async (req, res) => {
@@ -61,13 +61,13 @@ export default {
 
             if (!bcrypt.compare(pass, user.pass)) return res.status(400).json({ "status": "no existes" })
             
-            const load = { id: user._id, email: user.email }
+            const load = { _id: user._id, email: user.email }
             const token = await jwt.sign(load, process.env.private_key)
             return res.status(200).json({ token })
             
         } catch (err) {
             console.log(err)
-            res.status(500).json({ "msg": "hay algo mal" })
+            return res.status(500).json({ "msg": "hay algo mal" })
         }
     },
     editUser: async (req, res) => {
@@ -80,11 +80,11 @@ export default {
             user.pass = req.body.pass ? await bcrypt.hash(req.body.pass) : user.pass;
             user.avatar = req.body.avatar ? req.body.avatar : user.avatar;
             await usersModel.findByIdAndUpdate(user._id, user)
-            res.status(200).json({ "msg": "actualizado con exito" })
+            return res.status(200).json({ "msg": "actualizado con exito" })
 
         } catch (err) {
             console.log(err)
-            res.status(500).json({ "msg": "hay algo mal" })
+            return res.status(500).json({ "msg": "hay algo mal" })
         }
     },
     removeUser: async (req, res) => {
@@ -94,11 +94,11 @@ export default {
 
             if(!user) return res.status(400).json({ "msg": "no hay nota" })
 
-            res.status(200).json({ "msg": "se borro al wey" })
+            return res.status(200).json({ "msg": "se borro al wey" })
 
         } catch (err) {
             console.log(err)
-            res.status(500).json({ "msg": "hay algo mal" })
+            return res.status(500).json({ "msg": "hay algo mal" })
         }
     }
 }

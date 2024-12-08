@@ -104,6 +104,9 @@ export const Register = () => {
                 >
                     Registrarse
                 </button>
+                <div className="grid place-items-center">
+                    <p className="font-semibold text-sm">Ya tienes tu cuenta? <a href="/" className="text-morado hover:text-moradobajo">Inicia Sesion</a></p>
+                </div>
             </div>
         </>
     )

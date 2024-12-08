@@ -1,6 +1,18 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { useLocation } from "react-router";
+import { jwtDecode } from "jwt-decode";
+
+interface LocationStorage {
+    token?: string;
+}
+
+interface decodedToken {
+    _id: string;
+    exp: number;
+    iat: number;
+}
 
 interface Note {
     title: string,
@@ -8,8 +20,7 @@ interface Note {
     status: string,
     date_pro: Date,
     deadline: Date,
-    id_category: string,
-    id_user: string
+    id_category: string
 }
 
 export const CreateNote = () => {
@@ -19,8 +30,7 @@ export const CreateNote = () => {
         status: "pending",
         date_pro: new Date(),
         deadline: new Date(),
-        id_category: "",
-        id_user: "6733f16935e1efce8437c8f2"
+        id_category: ""
     })
 
     const [categories, setCategories] = useState<any>([]);
@@ -47,13 +57,20 @@ export const CreateNote = () => {
         console.log(note)
     }
 
+    const location = useLocation<LocationStorage>();
+    const token = location.state?.token || localStorage.getItem("authToken") || "nose";
+    console.log(token)
+
     const onSubmit = async () => {
 
         try {
+            const decodedToken: decodedToken = jwtDecode(token);
+            const userId = decodedToken._id;
+            console.log("id obtenido: " + userId + " y su tipo es: " + typeof (userId))
             console.log(note)
             Swal.fire("Enviando Datos");
             Swal.showLoading();
-            const response = await axios.post("http://localhost:5000/notes/add", note)
+            const response = await axios.post(`http://localhost:5000/notes/add?_id[$oid]=${userId}`,note)
             Swal.fire("Si funciona el register", response.data.msg, "success")
         } catch (err: any) {
             Swal.fire("Error al guardar la nota, intentalo mas tarde", err.response.data.msg, "error")
